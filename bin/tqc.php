@@ -2,6 +2,11 @@
 <?php
 
 const DEFAULT_COMPILER = 'https://compiler1.tinyqueries.com';
+const POSSIBLE_CONFIG_FILE_NAMES = [
+    'config.xml',
+    'tinyqueries.xml',
+    'tinyqueries.json'
+];
 
 function pathAbs($path) : string
 {
@@ -19,11 +24,43 @@ function pathAbs($path) : string
 
 function readConfig() : StdClass
 {
-    $configFile = 'config.xml';
-    if (!file_exists($configFile)) {
-        throw new \Exception('No config-file found in current folder');
+    foreach (POSSIBLE_CONFIG_FILE_NAMES as $possibleConfigFile) {
+        if (file_exists($possibleConfigFile)) {
+            list ($dummy,$extension) = explode('.', $possibleConfigFile);
+            switch ($extension) {
+                case 'json':
+                    $config = readJsonConfigFile($possibleConfigFile);
+                    break;
+                case 'xml':
+                    $config = readXmlConfigFile($possibleConfigFile);
+                    break;
+                default:
+                    throw new \Exception('Unsupported config file format');
+            }
+            standardizeConfig($config);
+            return $config;
+        }
+    }
+    throw new \Exception('No config-file found in current folder');
+}
+
+function readJsonConfigFile(string $configFile) : StdClass
+{
+    $content = file_get_contents($configFile);
+    if (!$content) {
+        throw new \Exception('Error reading config file');
     }
 
+    $config = json_decode($content);
+    if (!$config) {
+        throw new \Exception('Error decoding json config file');
+    }
+
+    return $config;
+}
+
+function readXmlConfigFile(string $configFile) : StdClass
+{
     // Load XML file
     $config = @simplexml_load_file($configFile);
 
@@ -53,23 +90,75 @@ function readConfig() : StdClass
     // Import compiler fields
     $result->compiler = new \StdClass();
     $result->compiler->apiKey = (string) $config->compiler['api_key'];
-    $result->compiler->input = ((string) $config->compiler['input']) ? pathAbs($config->compiler['input']) : null;
-    $result->compiler->output = ((string) $config->compiler['output']) ? pathAbs((string) $config->compiler['output']) : null;
-    $result->compiler->server = ((string) $config->compiler['server']) ? (string) $config->compiler['server'] : DEFAULT_COMPILER;
+    $result->compiler->input = ((string) $config->compiler['input']) ? (string) $config->compiler['input'] : null;
+    $result->compiler->output = ((string) $config->compiler['output']) ? (string) $config->compiler['output'] : null;
+    $result->compiler->server = ((string) $config->compiler['server']) ? (string) $config->compiler['server'] : null;
     $result->compiler->version = ((string) $config->compiler['version']) ? (string) $config->compiler['version'] : null;
     $result->compiler->lang = ((string) $config->compiler['lang']) ? (string) $config->compiler['lang'] : null;
-
-    // Add "v" to version if missing
-    if ($result->compiler->version && !preg_match("/^v/", $result->compiler->version)) {
-        $result->compiler->version = "v" . $result->compiler->version;
-    }
+    $result->compiler->outputFieldNames = ((string) $config->compiler['output_field_names']) ? (string) $config->compiler['output_field_names'] : null;
 
     return $result;
 }
 
+function standardizeConfig(StdClass &$config)
+{
+    // Check for mandatory fields
+    if (!isset($config->project)) {
+        throw new \Exception("Tag 'project' not found in config file");
+    }
+    if (!isset($config->project->label)) {
+        throw new \Exception("Field label not found in project tag of config file");
+    }
+    if (!isset($config->compiler)) {
+        throw new \Exception("Tag 'compiler' not found in config file");
+    }
+    if (!isset($config->compiler->apiKey)) {
+        throw new \Exception("Tag 'apiKey' not found in config file");
+    }
+    if (!isset($config->compiler->output)) {
+        throw new \Exception("Field 'output' not found in compiler tag of config file");
+    }
+
+    // Set (non mandatory) missing fields to default value
+    if (!isset($config->compiler->input)) {
+        $config->compiler->input = null;
+    }
+    if (!isset($config->compiler->version)) {
+        $config->compiler->version = null;
+    }
+    if (!isset($config->compiler->lang)) {
+        $config->compiler->lang = null;
+    }
+    if (!isset($config->compiler->outputFieldNames)) {
+        $config->compiler->outputFieldNames = null;
+    }
+    if (!isset($config->compiler->server)) {
+        $config->compiler->server = DEFAULT_COMPILER;
+    }
+
+    // Set abs paths
+    if (isset($config->compiler->input)) {
+        $config->compiler->input = pathAbs($config->compiler->input);
+    }
+    if (isset($config->compiler->output)) {
+        $config->compiler->output = pathAbs($config->compiler->output);
+    }
+    // Add "v" to version if missing
+    if (isset($config->compiler->version)
+        && !preg_match("/^v/", $config->compiler->version)) {
+        $config->compiler->version = 'v' . $config->compiler->version;
+    }
+}
+
 function isFileToUpload($filename) : bool
 {
-    if (in_array($filename, ['.', '..', 'config.xml'])) {
+    if (in_array(
+            $filename,
+            array_merge(
+                ['.', '..'],
+                POSSIBLE_CONFIG_FILE_NAMES
+            )
+        )) {
         return false;
     }
     return true;
@@ -127,7 +216,8 @@ function uploadFiles($config)
         'version' => $config->compiler->version,
         'zip' => curl_file_create(realpath($zipFileName)),
         'output' => 'site',
-        'lang' => $config->compiler->lang
+        'lang' => $config->compiler->lang,
+        'output_field_names' => $config->compiler->outputFieldNames
     ];
 
     curl_setopt($ch, CURLOPT_URL, $config->compiler->server);
