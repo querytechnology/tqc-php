@@ -21,6 +21,25 @@ The folder from which the script is run should contain a file `tinyqueries.json`
 
 ## Optional settings
 
+### compiler.lang
+
+Possible values: `sql` | `php`
+
+### compiler.output
+
+`compiler.output` can be used as a dictionary as well, for example:
+
+```json
+{
+	"compiler": {
+		"output": {
+			"sql": "<output folder sql>",
+			"php": "<output folder php>"
+		}
+	}
+}
+```
+
 ### compiler.outputFieldNames
 
 ```json

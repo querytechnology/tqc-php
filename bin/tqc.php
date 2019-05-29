@@ -141,7 +141,15 @@ function standardizeConfig(StdClass &$config)
         $config->compiler->input = pathAbs($config->compiler->input);
     }
     if (isset($config->compiler->output)) {
-        $config->compiler->output = pathAbs($config->compiler->output);
+        if (is_string($config->compiler->output)) {
+            $outputFolder = $config->compiler->output;
+            $defaultLang = $config->compiler->lang ?? 'sql';
+            $config->compiler->output = new StdClass();
+            $config->compiler->output->$defaultLang = $outputFolder;
+        }
+        foreach ($config->compiler->output as $lang => $folder) {
+            $config->compiler->output->$lang = pathAbs($folder);
+        }
     }
     // Add "v" to version if missing
     if (isset($config->compiler->version)
@@ -265,15 +273,11 @@ function uploadFiles($config)
         $filename = $zip->getNameIndex($i);
         $content = $zip->getFromName($filename);
         $path = explode('/', $filename);
-        if ($config->compiler->lang) {
-            if ($config->compiler->output
-                && $path[0] == $config->compiler->lang
-                && $path[1]) {
-                file_put_contents($config->compiler->output . DIRECTORY_SEPARATOR . $path[1], $content);
-            }
-        } elseif ($path[0] == 'sql') {
-            if ($path[1]) {
-                file_put_contents($config->compiler->output . DIRECTORY_SEPARATOR . $path[1], $content);
+        foreach ($config->compiler->output as $lang => $folder) {
+            if ($path[0] == $lang) {
+                if ($path[1]) {
+                    file_put_contents($folder . DIRECTORY_SEPARATOR . $path[1], $content);
+                }
             }
         }
     }
