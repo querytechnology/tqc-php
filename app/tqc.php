@@ -190,7 +190,10 @@ function sendCompileRequest(array $config, string $apiKey)
     $zip = new ZipArchive();
     $zipFileName = 'download-' . $tag . '.zip';
     file_put_contents($zipFileName, $response[1]);
-    $zip->open($zipFileName);
+    $r = $zip->open($zipFileName);
+    if ($r !== true) {
+        throw new \Exception('Error opening ZIP coming from compiler - error code = ' . $r);
+    }
     for ($i=0; $i<$zip->numFiles; $i++) {
         $filename = $zip->getNameIndex($i);
         $content = $zip->getFromName($filename);
@@ -212,7 +215,7 @@ try {
     $apiKey = getApiKey();
     $config = readConfig();
     echo "project: " . ($config['project']['label'] ?? 'unknown') . "\n";
-    echo "compiler: " . ($config['compiler']['server'] ?? 'default') . "\n";
+    echo "server: " . ($config['compiler']['server'] ?? 'default') . "\n";
     echo "version: " . ($config['compiler']['version'] ?? 'default') . "\n";
     sendCompileRequest($config, $apiKey);
     echo "\033[1;37mReady\033[0m\n";
