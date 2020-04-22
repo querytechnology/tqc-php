@@ -1,11 +1,12 @@
-#!/usr/bin/php
 <?php
 
-const DEFAULT_COMPILER = 'https://compiler1.tinyqueries.com';
+require_once __DIR__ . '/../vendor/autoload.php';
+
+const DEFAULT_COMPILER = 'https://compile.tinyqueries.com';
 const POSSIBLE_CONFIG_FILE_NAMES = [
-    'config.xml',
-    'tinyqueries.xml',
-    'tinyqueries.json'
+    'tinyqueries.json',
+    'tinyqueries.yml',
+    'tinyqueries.yaml',
 ];
 
 function pathAbs($path) : string
@@ -31,8 +32,9 @@ function readConfig() : StdClass
                 case 'json':
                     $config = readJsonConfigFile($possibleConfigFile);
                     break;
-                case 'xml':
-                    $config = readXmlConfigFile($possibleConfigFile);
+                case 'yml':
+                case 'yaml':
+                    $config = readYamlConfigFile($possibleConfigFile);
                     break;
                 default:
                     throw new \Exception('Unsupported config file format');
@@ -59,7 +61,7 @@ function readJsonConfigFile(string $configFile) : StdClass
     return $config;
 }
 
-function readXmlConfigFile(string $configFile) : StdClass
+function readYamlConfigFile(string $configFile) : StdClass
 {
     // Load XML file
     $config = @simplexml_load_file($configFile);
