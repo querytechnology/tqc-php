@@ -138,6 +138,10 @@ function sendCompileRequest(array $config, string $apiKey)
         throw new \Exception('No input folder specified in config file');
     }
 
+    if (!file_exists($folderInput)) {
+        throw new \Exception('Cannot find input folder ' . $folderInput);
+    }
+
     echo "- input folder: $folderInput\n";
     addFolderRecursivelyToZip($zip, $folderInput);
 
@@ -200,7 +204,10 @@ function sendCompileRequest(array $config, string $apiKey)
         $filename = $zip->getNameIndex($i);
         $content = $zip->getFromName($filename);
         if (!preg_match('/\/$/', $filename)) {
-            file_put_contents($filename, $content);
+            $r = @file_put_contents($filename, $content);
+            if ($r === false) {
+                throw new \Exception('Cannot write file ' . $filename);
+            }
         }
     }
     $zip->close();
