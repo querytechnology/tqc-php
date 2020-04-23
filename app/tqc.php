@@ -138,7 +138,7 @@ function sendCompileRequest(array $config, string $apiKey)
         throw new \Exception('No input folder specified in config file');
     }
 
-    echo "input folder: $folderInput\n";
+    echo "- input folder: $folderInput\n";
     addFolderRecursivelyToZip($zip, $folderInput);
 
     $zip->close();
@@ -158,7 +158,7 @@ function sendCompileRequest(array $config, string $apiKey)
         'Authorization: Bearer ' . $apiKey
     ]);
 
-    echo "Uploading zip to compiler\n";
+    echo "Uploading zip to compiler..\n";
     $responseRaw = curl_exec($ch);
 
     curl_close($ch);
@@ -187,6 +187,8 @@ function sendCompileRequest(array $config, string $apiKey)
         throw new \Exception($errorMessage);
     }
 
+    echo "Extracting received zip..\n";
+
     $zip = new ZipArchive();
     $zipFileName = 'download-' . $tag . '.zip';
     file_put_contents($zipFileName, $response[1]);
@@ -197,13 +199,8 @@ function sendCompileRequest(array $config, string $apiKey)
     for ($i=0; $i<$zip->numFiles; $i++) {
         $filename = $zip->getNameIndex($i);
         $content = $zip->getFromName($filename);
-        $path = explode('/', $filename);
-        foreach ($config['compiler']['output'] as $lang => $folder) {
-            if ($path[0] == $lang) {
-                if ($path[1]) {
-                    file_put_contents($folder . DIRECTORY_SEPARATOR . $path[1], $content);
-                }
-            }
+        if (!preg_match('/\/$/', $filename)) {
+            file_put_contents($filename, $content);
         }
     }
     $zip->close();
@@ -211,12 +208,12 @@ function sendCompileRequest(array $config, string $apiKey)
 }
 
 try {
-    echo "\033[0;33mTiny\033[1;37mQueries\033[0m\n";
+    echo "\033[1;33mTiny\033[1;37mQueries\033[0m\n";
     $apiKey = getApiKey();
     $config = readConfig();
-    echo "project: " . ($config['project']['label'] ?? 'unknown') . "\n";
-    echo "server: " . ($config['compiler']['server'] ?? 'default') . "\n";
-    echo "version: " . ($config['compiler']['version'] ?? 'default') . "\n";
+    echo "- project: " . ($config['project']['label'] ?? 'unknown') . "\n";
+    echo "- server: " . ($config['compiler']['server'] ?? 'default') . "\n";
+    echo "- version: " . ($config['compiler']['version'] ?? 'default') . "\n";
     sendCompileRequest($config, $apiKey);
     echo "\033[1;37mReady\033[0m\n";
 } catch (\Exception $e) {
