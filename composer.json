@@ -1,0 +1,16 @@
+{
+    "name": "querytechnology/tqc-php",
+    "description": "Client for compiling TinyQueries into SQL which uses the online TinyQueries compiler",
+    "require": {
+        "ext-zip": "*",
+        "ext-json": "*",
+        "ext-curl": "*",
+        "symfony/dotenv": "^3.3",
+        "symfony/yaml": "^3.3"
+    },
+    "config": {
+        "platform": {
+            "php": "7"
+        }
+    }
+}
