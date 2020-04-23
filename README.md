@@ -26,14 +26,14 @@ TINYQUERIES_API_KEY=<yourkey>
 - Create a config file `tinyqueries.json` or `tinyqueries.yaml` in your project folder. For example:
 ```json
 {
-	"project": {
-		"label": "my-project-label"
-	},
-	"compiler": {
-		"dialect": "mysql",
-		"input": "<input folder>",
-		"output": "<output folder>"
-	}
+  "project": {
+    "label": "my-project-label"
+  },
+  "compiler": {
+    "dialect": "mysql",
+    "input": "<input folder>",
+    "output": "<output folder>"
+  }
 }
 ```
 - `input` should point to the folder of your TinyQueries source queries
