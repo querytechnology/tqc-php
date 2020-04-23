@@ -12,8 +12,8 @@ Mac/Linux:
 - Make sure you have PHP v7.0 or higher
 - Run these commands:
 	- `wget https://github.com/querytechnology/tqc-php/raw/master/bin/tqc.phar`
-	- `mv tqc.phar /usr/local/bin/tqc`
-	- `chmod +x /usr/local/bin/tqc`
+	- `sudo mv tqc.phar /usr/local/bin/tqc`
+	- `sudo chmod +x /usr/local/bin/tqc`
 
 ## Usage
 
