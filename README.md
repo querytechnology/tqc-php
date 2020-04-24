@@ -19,28 +19,23 @@ sudo chmod +x /usr/local/bin/tqc
 
 ## Setup TinyQueries&trade; for your project
 
-- It is assumed you have a folder for your project
+It is assumed you have a folder for your project. It can be an empty folder or a folder which contains other code as well.
 - Make sure you have an API key for the TinyQueries&trade; Compiler. You can get one here: https://tinyqueries.com/signup
-- Create a file `.env` in your project folder if you don't have one yet and add your API key for the compiler:
+- Create a file `.env` in the root of your project folder if you don't have one yet and add your API key:
 ```
 TINYQUERIES_API_KEY=<yourkey>
 ```
-- Put your TinyQueries source queries in a folder inside your project folder
+- Create a folder inside your project folder (for example `tinyqueries`) in which you put your TinyQueries source queries
+- Create a folder inside your project folder (for example `sql`) in which you want the compiler to put your compiled queries
 - Create a config file `tinyqueries.json` or `tinyqueries.yaml` in the root of your project folder. For example:
-```json
-{
-  "project": {
-    "label": "my-project-label"
-  },
-  "compiler": {
-    "dialect": "mysql",
-    "input": "<input folder>",
-    "output": "<output folder>"
-  }
-}
+```yaml
+project:
+  label: my-project-label
+  compiler:
+    dialect: mysql
+    input: ./tinyqueries
+    output: ./sql
 ```
-- `input` should point to the folder of your TinyQueries source queries
-- `output` should be a folder in which the output files of the compiler will be put
 
 For a more detailed description of config files please check https://compile.tinyqueries.com
 
