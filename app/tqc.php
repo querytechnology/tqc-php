@@ -164,7 +164,7 @@ function sendCompileRequest(array $config, string $apiKey)
     $response = explode("\r\n\r\n", $responseRaw, 2);
 
     // Find the HTTP status code
-    $matches = array();
+    $matches = [];
     if (preg_match('/^HTTP.* ([0-9]+) /', $response[0], $matches)) {
         $status = intval($matches[1]);
     }
