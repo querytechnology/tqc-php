@@ -31,10 +31,10 @@ TINYQUERIES_API_KEY=<yourkey>
 ```yaml
 project:
   label: my-project-label
-  compiler:
-    dialect: mysql
-    input: ./tinyqueries
-    output: ./sql
+compiler:
+  dialect: mysql
+  input: ./tinyqueries
+  output: ./sql
 ```
 
 For a more detailed description of config files please check https://compile.tinyqueries.com
