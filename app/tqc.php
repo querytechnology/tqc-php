@@ -25,20 +25,6 @@ function getApiKey() : string
     return $key;
 }
 
-function pathAbs($path) : string
-{
-    // Check if $path is a relative or absolute path
-    $pathAbs = ($path && preg_match('/^\./', $path))
-        ? realpath(dirname(__FILE__) . '/' . $path)
-        : realpath($path);
-
-    if (!$pathAbs) {
-        throw new \Exception("Cannot find path '" . $path . "'");
-    }
-
-    return $pathAbs;
-}
-
 function readConfig() : array
 {
     foreach (POSSIBLE_CONFIG_FILE_NAMES as $possibleConfigFile) {
