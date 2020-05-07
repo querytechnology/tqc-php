@@ -4,6 +4,8 @@ Command line interface written in PHP for the TinyQueries&trade; Compiler
 
 ## Installation
 
+Make sure you have an API key for the TinyQueries&trade; Compiler. You can get one here: https://tinyqueries.com/signup. You can choose to add `TINYQUERIES_API_KEY` to your ENV variabeles OR add it to your `.env` file if you have one.
+
 Windows:
 - Make sure you have PHP v7.0 or higher
 - Download the files `bin/tqc.phar` and `bin/tqc.bat` from this repo and put them in a folder which is in your PATH
@@ -20,11 +22,6 @@ sudo chmod +x /usr/local/bin/tqc
 ## Setup TinyQueries&trade; for your project
 
 It is assumed you have a folder for your project. It can be an empty folder or a folder which contains other code as well.
-- Make sure you have an API key for the TinyQueries&trade; Compiler. You can get one here: https://tinyqueries.com/signup
-- Either add `TINYQUERIES_API_KEY` to your ENV variabeles OR create a file `.env` in the root of your project folder if you don't have one yet and add your API key:
-```
-TINYQUERIES_API_KEY=<yourkey>
-```
 - Create a folder inside your project folder (for example `tinyqueries`) in which you put your TinyQueries source queries
 - Create a folder inside your project folder (for example `sql`) in which you want the compiler to put your compiled queries
 - Create a config file `tinyqueries.json` or `tinyqueries.yaml` in the root of your project folder. For example:
