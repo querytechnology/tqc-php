@@ -21,7 +21,7 @@ sudo chmod +x /usr/local/bin/tqc
 
 It is assumed you have a folder for your project. It can be an empty folder or a folder which contains other code as well.
 - Make sure you have an API key for the TinyQueries&trade; Compiler. You can get one here: https://tinyqueries.com/signup
-- Create a file `.env` in the root of your project folder if you don't have one yet and add your API key:
+- Either add `TINYQUERIES_API_KEY` to your ENV variabeles OR create a file `.env` in the root of your project folder if you don't have one yet and add your API key:
 ```
 TINYQUERIES_API_KEY=<yourkey>
 ```
@@ -46,4 +46,3 @@ Once you have setup your project you just have to execute
 tqc
 ```
 from your project folder each time you want to compile your source files
-

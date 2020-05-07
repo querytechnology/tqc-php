@@ -15,14 +15,17 @@ const POSSIBLE_CONFIG_FILE_NAMES = [
 function getApiKey() : string
 {
     $dotenv = new Dotenv();
-    $dotenv->load('.env');
-    $key = getenv('TINYQUERIES_API_KEY');
+    try {
+        $dotenv->overload('.env');
+    } catch (\Exception $e) {
+    }
+    $key = $_ENV['TINYQUERIES_API_KEY'] ?? getenv('TINYQUERIES_API_KEY');
 
     if (!$key) {
         throw new \Exception('No API key found');
     }
 
-    return $key;
+    return trim($key);
 }
 
 function readConfig() : array
