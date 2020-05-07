@@ -56,7 +56,7 @@ function readConfig() : array
             return $config;
         }
     }
-    throw new \Exception('No config-file found in current folder');
+    throw new \Exception('No config file found in current folder - Please create a config file tinyqueries.yaml');
 }
 
 function standardizeConfig(array &$config)
