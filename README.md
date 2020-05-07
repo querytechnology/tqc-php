@@ -4,7 +4,7 @@ Command line interface written in PHP for the TinyQueries&trade; Compiler
 
 ## Installation
 
-Make sure you have an API key for the TinyQueries&trade; Compiler. You can get one here: https://tinyqueries.com/signup. You can choose to add `TINYQUERIES_API_KEY` to your ENV variabeles OR add it to your `.env` file if you have one.
+Make sure you have an API key for the TinyQueries&trade; Compiler. You can get one here: https://tinyqueries.com/signup. You can choose to add `TINYQUERIES_API_KEY` to your ENV variabeles OR add it to the `.env` file of your project if you have one.
 
 Windows:
 - Make sure you have PHP v7.0 or higher
