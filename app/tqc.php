@@ -22,7 +22,7 @@ function getApiKey() : string
     $key = $_ENV['TINYQUERIES_API_KEY'] ?? getenv('TINYQUERIES_API_KEY');
 
     if (!$key) {
-        throw new \Exception('No API key found');
+        throw new \Exception('No API key found - please add your TinyQueries API key to your ENV variables');
     }
 
     return trim($key);
