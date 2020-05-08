@@ -61,8 +61,17 @@ function readConfig() : array
 
 function standardizeConfig(array &$config)
 {
+    if (!isset($config['project']['label'])) {
+        $config['project']['label'] = '';
+    }
     if (!isset($config['compiler']['server'])) {
         $config['compiler']['server'] = DEFAULT_COMPILER;
+    }
+    if (!isset($config['compiler']['version'])) {
+        $config['compiler']['version'] = 'latest';
+    }
+    if (!isset($config['compiler']['input'])) {
+        $config['compiler']['input'] = 'tinyqueries';
     }
 }
 
@@ -105,6 +114,10 @@ function sendCompileRequest(array $config, string $apiKey)
         throw new \Exception('Cannot compile queries - curl extension for PHP is not installed');
     }
 
+    if (!file_exists($config['compiler']['input'])) {
+        throw new \Exception('Cannot find input folder ' . $config['compiler']['input']);
+    }
+
     $ch = curl_init();
 
     if (!$ch) {
@@ -121,18 +134,7 @@ function sendCompileRequest(array $config, string $apiKey)
 
     $zip->addFile($config['fileName']);
 
-    $folderInput = $config['compiler']['input'] ?? (file_exists('tinyqueries') ? 'tinyqueries' : null);
-
-    if (!$folderInput) {
-        throw new \Exception('No input folder specified in config file');
-    }
-
-    if (!file_exists($folderInput)) {
-        throw new \Exception('Cannot find input folder ' . $folderInput);
-    }
-
-    echo "- input folder: $folderInput\n";
-    addFolderRecursivelyToZip($zip, $folderInput);
+    addFolderRecursivelyToZip($zip, $config['compiler']['input']);
 
     $zip->close();
 
@@ -207,9 +209,10 @@ try {
     echo "\033[1;33mTiny\033[1;37mQueries\033[0m\n";
     $apiKey = getApiKey();
     $config = readConfig();
-    echo "- project: " . ($config['project']['label'] ?? 'unknown') . "\n";
-    echo "- server: " . ($config['compiler']['server'] ?? 'default') . "\n";
-    echo "- version: " . ($config['compiler']['version'] ?? 'default') . "\n";
+    echo "- project: " . $config['project']['label'] . "\n";
+    echo "- server: " . $config['compiler']['server'] . "\n";
+    echo "- version: " . $config['compiler']['version'] . "\n";
+    echo "- input folder: " . $config['compiler']['input'] . "\n";
     sendCompileRequest($config, $apiKey);
     echo "\033[1;37mReady\033[0m\n";
 } catch (\Exception $e) {
