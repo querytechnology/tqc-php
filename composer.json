@@ -1,6 +1,16 @@
 {
     "name": "querytechnology/tqc",
     "description": "Command line interface for the TinyQueries Compiler",
+    "homepage": "https://www.tinyqueries.com",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Wouter Diesveld",
+            "email": "wouter@querytechnology.com",
+            "homepage": "https://querytechnology.com",
+            "role": "Developer"
+        }
+    ],
     "require": {
         "php": ">=7.0",
         "ext-zip": "*",
