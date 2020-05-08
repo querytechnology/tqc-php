@@ -2,6 +2,7 @@
     "name": "querytechnology/tqc",
     "description": "Command line interface for the TinyQueries Compiler",
     "require": {
+        "php": ">=7.0",
         "ext-zip": "*",
         "ext-json": "*",
         "ext-curl": "*",

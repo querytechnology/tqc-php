@@ -94,7 +94,7 @@ class Compiler
     {
         $content = scandir($folder);
         foreach ($content as $element) {
-            if (isFileToUpload($element)) {
+            if (self::isFileToUpload($element)) {
                 $path = $folder . DIRECTORY_SEPARATOR . $element;
                 $pathRelative = $folderRelative
                     ? $folderRelative . '/' . $element
@@ -125,11 +125,11 @@ class Compiler
             throw new \Exception('Cannot initialize curl');
         }
 
-        $zip = new ZipArchive();
+        $zip = new \ZipArchive();
         $tag = md5(rand());
         $zipFileName = 'upload-' . $tag . '.zip';
 
-        if ($zip->open($zipFileName, ZipArchive::CREATE)!==true) {
+        if ($zip->open($zipFileName, \ZipArchive::CREATE)!==true) {
             throw new \Exception("Cannot open $zipFileName");
         }
 
@@ -190,7 +190,7 @@ class Compiler
             echo "Extracting received zip..\n";
         }
 
-        $zip = new ZipArchive();
+        $zip = new \ZipArchive();
         $zipFileName = 'download-' . $tag . '.zip';
         file_put_contents($zipFileName, $response[1]);
         $r = $zip->open($zipFileName);
