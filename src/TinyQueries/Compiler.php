@@ -111,6 +111,8 @@ class Compiler
 
     public function compile(array $config, string $apiKey, bool $verbose = false)
     {
+        self::standardizeConfig($config);
+
         if (!function_exists('curl_init')) {
             throw new \Exception('Cannot compile queries - curl extension for PHP is not installed');
         }
@@ -133,7 +135,11 @@ class Compiler
             throw new \Exception("Cannot open $zipFileName");
         }
 
-        $zip->addFile($config['fileName']);
+        if (isset($config['fileName'])) {
+            $zip->addFile($config['fileName']);
+        } else {
+            $zip->addFromString('tinyqueries.json', json_encode($config));
+        }
 
         self::addFolderRecursivelyToZip($zip, $config['compiler']['input']);
 

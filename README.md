@@ -63,7 +63,7 @@ $config = [
     'label' => 'your-project-label'
   ],
   'compiler' => [
-    'dialect' => 'mysql'
+    'dialect' => 'mysql',
     'input' => './tinyqueries',
     'output' => './sql'
   ]
