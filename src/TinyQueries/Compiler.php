@@ -128,8 +128,7 @@ class Compiler
         }
 
         $zip = new \ZipArchive();
-        $tag = md5(rand());
-        $zipFileName = 'upload-' . $tag . '.zip';
+        $zipFileName = tempnam(sys_get_temp_dir(), 'tq-');
 
         if ($zip->open($zipFileName, \ZipArchive::CREATE)!==true) {
             throw new \Exception("Cannot open $zipFileName");
@@ -143,7 +142,11 @@ class Compiler
 
         self::addFolderRecursivelyToZip($zip, $config['compiler']['input']);
 
-        $zip->close();
+        $r = $zip->close();
+
+        if ($r !== true) {
+            throw new \Exception('Could not create zip file for upload ' . $zipFileName);
+        }
 
         $postBody = [
             'tq_code' => curl_file_create(realpath($zipFileName)),
@@ -197,8 +200,10 @@ class Compiler
         }
 
         $zip = new \ZipArchive();
-        $zipFileName = 'download-' . $tag . '.zip';
-        file_put_contents($zipFileName, $response[1]);
+        $r = file_put_contents($zipFileName, $response[1]);
+        if ($r === false) {
+            throw new \Exception('Error writing downloaded zip ' . $zipFileName);
+        }
         $r = $zip->open($zipFileName);
         if ($r !== true) {
             throw new \Exception('Error opening ZIP coming from compiler - error code = ' . $r);
