@@ -22,7 +22,7 @@ It is assumed you have a folder for your project. It can be an empty folder or a
 - Create a config file `tinyqueries.json` or `tinyqueries.yaml` in the root of your project folder. For example:
 ```yaml
 project:
-  label: my-project-label
+  label: your-project-label
 compiler:
   dialect: mysql
   input: ./tinyqueries
@@ -38,3 +38,34 @@ Once you have setup your project you just have to execute
 tqc
 ```
 from your project folder each time you want to compile your source files
+
+## Use the lib as PHP package
+
+Add the package to your project:
+
+```
+composer require querytechnology/tqc
+```
+
+Example PHP file how to compile your queries:
+
+```php
+<?php
+
+require_once './vendor/autoload.php'
+
+use TinyQueries\Compiler;
+
+$compiler = new Compiler();
+$apiKey = 'your-api-key';
+$config = [
+  'project' => [
+    'label' => 'your-project-label'
+  ],
+  'compiler' => [
+    'dialect' => 'mysql'
+    'input' => './tinyqueries',
+    'output' => './sql'
+  ]
+];
+$compiler->compile($config, $apiKey);
