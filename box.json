@@ -7,6 +7,10 @@
             "name": "*.php",
             "exclude": ["test", "tests"],
             "in": "vendor"
+        },
+        {
+            "name": "*.php",
+            "in": "src"
         }
     ],
     "stub": true
