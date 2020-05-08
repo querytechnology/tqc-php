@@ -41,7 +41,7 @@ from your project folder each time you want to compile your source files
 
 ## Use the lib as PHP package
 
-If you want to call the TinyQueries&trade; Compiler from inside a PHP script, instead of the command line, you can do that as follows:
+If you want to call the TinyQueries&trade; Compiler from inside a PHP script, instead of from the command line, you can do that as follows:
 
 ```
 composer require querytechnology/tqc
@@ -52,7 +52,7 @@ Example PHP file how to compile your queries:
 ```php
 <?php
 
-require_once './vendor/autoload.php'
+require_once './vendor/autoload.php';
 
 use TinyQueries\Compiler;
 
