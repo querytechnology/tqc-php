@@ -1,5 +1,5 @@
 {
-    "name": "querytechnology/tqc-php",
+    "name": "querytechnology/tqc",
     "description": "Command line interface for the TinyQueries Compiler",
     "require": {
         "ext-zip": "*",
